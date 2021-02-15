@@ -28,7 +28,7 @@ class CreateAccountScreen extends React.Component {
     let password = this.state.userPassword;
     let userToken = new Token();
     userToken.initToken(password);
-    console.log(userToken.toString());
+    this.props.onSubmit(userToken, password);
   };
 
   render() {

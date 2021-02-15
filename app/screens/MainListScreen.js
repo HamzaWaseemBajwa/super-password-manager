@@ -3,12 +3,14 @@ import React from "react";
 import { Alert, StyleSheet, View, Clipboard, SafeAreaView } from "react-native";
 import MainItemsList from "../components/MainItemsListComponent";
 import { AsyncLoadObject, AsyncStoreObject } from "../lib/StorageHandlers";
+import { decryptData, encryptData } from "../lib/Crypto";
 
 const STORAGE_KEY = "KEY_CHAIN";
 
 class MainListScreen extends React.Component {
   constructor(props) {
     super(props);
+    console.log(props);
     this.state = {
       itemList: [],
     };
@@ -24,9 +26,15 @@ class MainListScreen extends React.Component {
   }
 
   loadItemsFromStorage() {
-    AsyncLoadObject(STORAGE_KEY).then((loadedData) => {
-      if (loadedData != null) {
-        //console.log(loadedData);
+    AsyncLoadObject(STORAGE_KEY).then((encryptedData) => {
+      if (encryptedData != null) {
+        console.log(encryptedData);
+        const loadedData = decryptData(
+          encryptedData,
+          this.props.KEY,
+          this.props.SALT
+        );
+        console.log(loadedData);
         this.setState({ itemList: loadedData });
       }
     });
@@ -37,7 +45,15 @@ class MainListScreen extends React.Component {
       console.log("Nothing to save....");
       return;
     }
-    AsyncStoreObject(STORAGE_KEY, this.state.itemList).then((result) => {});
+    const listString = JSON.stringify(this.state.itemList);
+    console.log(listString);
+    const encryptedData = encryptData(
+      listString,
+      this.props.KEY,
+      this.props.SALT
+    );
+    console.log(encryptedData);
+    AsyncStoreObject(STORAGE_KEY, encryptedData).then((result) => {});
   }
 
   writeToClipboard = async (value) => {

@@ -12,9 +12,6 @@ import { AntDesign } from "@expo/vector-icons";
 import { AsyncLoadString, AsyncStoreString } from "../lib/StorageHandlers";
 import { useNavigation } from "@react-navigation/native";
 
-const LOGIN_PASSWORD_KEY = "USER_PASSWORD";
-const TEST_PASSWORD_HASH = "test123";
-
 class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -31,7 +28,7 @@ class LoginScreen extends React.Component {
       if (this.state.enteredPassword === hash) {
         this.setState({ loginSuccess: true }, () => {
           setTimeout(() => {
-            this.props.onLoginSuccess();
+            this.props.onSubmit();
           }, 2000);
         });
       } else {

@@ -5,6 +5,7 @@ export default class Token {
     this.userId = "";
     this.userPasswordSalt = "";
     this.userPasswordHash = "";
+    this.userEncryptionSalt = "";
   }
 
   initToken(password) {
@@ -12,6 +13,7 @@ export default class Token {
     this.userPasswordSalt = Crypto.generateSalt().toString();
     let saltedPassword = password + this.userPasswordSalt.toString();
     this.userPasswordHash = Crypto.getHash(saltedPassword).toString();
+    this.userEncryptionSalt = Crypto.generateSalt().toString();
   }
 
   verifyPassword(password) {

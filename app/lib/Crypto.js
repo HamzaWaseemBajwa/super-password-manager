@@ -1,11 +1,12 @@
 import aes from "crypto-js/aes";
 import keyStretch from "crypto-js/pbkdf2";
 import sha256 from "crypto-js/sha256";
+import encoder from "crypto-js/enc-utf8";
 import crypto from "crypto-js";
 
-export const encryptData = (text, key) => {
+export const encryptData = (text, key, salt) => {
   try {
-    const passKey = keyStretch(key, SALT).toString();
+    const passKey = keyStretch(key, salt).toString();
     const ciphertext = aes.encrypt(text, passKey).toString();
     return ciphertext;
   } catch (e) {
@@ -14,9 +15,9 @@ export const encryptData = (text, key) => {
   return null;
 };
 
-export const decryptData = (encryptedData, key) => {
+export const decryptData = (encryptedData, key, salt) => {
   try {
-    const passKey = keyStretch(key, SALT).toString();
+    const passKey = keyStretch(key, salt).toString();
     const bytes = aes.decrypt(encryptedData, passKey);
     const originalText = bytes.toString(encoder);
     return originalText;
@@ -34,4 +35,8 @@ export const generateSalt = () => {
 export const getHash = (string) => {
   let hash = sha256(string);
   return hash;
+};
+
+export const deriveKey = (key, salt) => {
+  return keyStretch(key, salt).toString();
 };
